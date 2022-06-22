@@ -15,7 +15,7 @@ public class EditorBody extends JPanel{
     private final JButton SEND_LOCATION_BOTTOM =new JButton();
     //setPhoto
     private String location;
-    private String ADD;
+    private String add;
     private int newPhotoName;
     private final int MAKE_RELATIVE_SIZE=1000;
     private File file;
@@ -34,8 +34,8 @@ public class EditorBody extends JPanel{
     private final String [] ENGLISH_BOTTOM_NAMES ={"shadows","lights","contrast","colors","warm","red","green","blue","white","sunLight"};
     private final String [] HEBREW_BOTTOM_NAMES ={"צללים","אור","ניגודיות","צבעים","חמים","אדום","ירוק","כחול","לבן","שמש"};
     private boolean english=true;
-    private final SettingBottom[] PLUS_BOTTOMS = new SettingBottom[ENGLISH_BOTTOM_NAMES.length];
-    private final SettingBottom[] MINUS_BOTTOMS = new SettingBottom[ENGLISH_BOTTOM_NAMES.length];
+    private final SettingButton[] PLUS_BOTTOMS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
+    private final SettingButton[] MINUS_BOTTOMS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
     private final TextField[] FUNCTION =new TextField[ENGLISH_BOTTOM_NAMES.length];
     private final JButton RESET =new JButton();
     private final JButton SHOW_ORIGINAL_PHOTO =new JButton();
@@ -62,7 +62,7 @@ public class EditorBody extends JPanel{
     private final String[] HEBREW_EFFECT_NAMES = {"היפוך צבעים", "גווני אפור", "ניצוצות צבעוניים","שינוי יצירתי","הוסף רעש","מראה"};
     private final int NUM_OF_EFFECTS= ENGLISH_EFFECT_NAMES.length;
     private final JButton[] EFFECT_BOTTOMS = new JButton[NUM_OF_EFFECTS];
-    private final BottomsList MENU_BOTTOM=new BottomsList(1300,Y_START-90,"effects",160,60,EFFECT_BOTTOMS, ENGLISH_EFFECT_NAMES);
+    private final ButtonsList MENU_BOTTOM=new ButtonsList(1300,Y_START-90,"effects",160,60,EFFECT_BOTTOMS, ENGLISH_EFFECT_NAMES);
     private final JButton CHANGE_LANGUAGE =new JButton();
     //facebook bottom and fields
     private final JButton FACEBOOK_BOTTOM =new JButton();
@@ -126,8 +126,8 @@ public class EditorBody extends JPanel{
                     yLocation=Y_START +i*BOTTOMS_DISTANCE;
                 }
 
-                PLUS_BOTTOMS[i]=new SettingBottom(PLUS_BOTTOMS_START+rightSide,yLocation,">+");
-                MINUS_BOTTOMS[i]=new SettingBottom(MINUS_BOTTOMS_START+rightSide,yLocation,"-<");
+                PLUS_BOTTOMS[i]=new SettingButton(PLUS_BOTTOMS_START+rightSide,yLocation,">+");
+                MINUS_BOTTOMS[i]=new SettingButton(MINUS_BOTTOMS_START+rightSide,yLocation,"-<");
                 FUNCTION[i]=new TextField();
                 FUNCTION[i].setBounds(MINUS_BOTTOMS_START+ MINUS_BOTTOMS[i].getWidth()+rightSide,yLocation,BOTTOMS_DISTANCE, MINUS_BOTTOMS[i].getHeight());
                 FUNCTION[i].setEnabled(false);
@@ -282,14 +282,14 @@ public class EditorBody extends JPanel{
     }
     private void setPhoto(String path){
         try {
-            ADD="";
+            add ="";
             newPhotoName=1;
             int correctionX=215;
             int correctionY=150;
             resetPhoto();
 
             location=setNewPhoto(path);
-            file = new File(location+ADD);
+            file = new File(location+ add);
             if(file.exists()){
                 image = ImageIO.read(file);
 
@@ -341,9 +341,9 @@ public class EditorBody extends JPanel{
                 break;}
         }
         for (int i = changeAdd.length()-1; i >= 0; i--) {
-            ADD+=changeAdd.charAt(i);
+            add +=changeAdd.charAt(i);
         }
-        for (int i = 1; i < location.length()-ADD.length()-1; i++) {
+        for (int i = 1; i < location.length()- add.length()-1; i++) {
             resultPath+=location.charAt(i);
         }
         return resultPath;}
@@ -871,7 +871,7 @@ public class EditorBody extends JPanel{
         if(green!=NOTHING){green(fullPhoto,qualityWidth,qualityHeight,change*green);}
         if(blue!=NOTHING){blue(fullPhoto,qualityWidth,qualityHeight,change*blue);}
         try{
-            File photo=new File(location+newPhotoName+ADD);
+            File photo=new File(location+newPhotoName+ add);
             BufferedImage savedImage=ImageIO.read(file);
 
             for (int i = 0; i < savedImage.getWidth(); i++) {
