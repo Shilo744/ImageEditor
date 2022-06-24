@@ -6,13 +6,15 @@ import java.io.File;
 import java.io.IOException;
 
 public class EditorBody extends JPanel{
+    JFrame errorFrame = new JFrame();
+    private boolean checkPath = false;
     //choose photo
     private final TextField PHOTO_LOCATION =new TextField();
     int PHOTO_LOCATION_X=640;
     int PHOTO_LOCATION_Y=25;
     int PHOTO_LOCATION_WIDTH=190;
     int PHOTO_LOCATION_HEIGHT=30;
-    private final JButton SEND_LOCATION_BOTTOM =new JButton();
+    private final JButton SEND_LOCATION_BUTTON =new JButton();
     //setPhoto
     private String location;
     private String add;
@@ -30,12 +32,12 @@ public class EditorBody extends JPanel{
     private Pixel[][] shrinkImage;
     private Pixel[][] shrinkImageOriginal;
     private boolean displayOriginal=false;
-    //bottoms
+    //buttons
     private final String [] ENGLISH_BOTTOM_NAMES ={"shadows","lights","contrast","colors","warm","red","green","blue","white","sunLight"};
     private final String [] HEBREW_BOTTOM_NAMES ={"צללים","אור","ניגודיות","צבעים","חמים","אדום","ירוק","כחול","לבן","שמש"};
     private boolean english=true;
-    private final SettingButton[] PLUS_BOTTOMS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
-    private final SettingButton[] MINUS_BOTTOMS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
+    private final SettingButton[] PLUS_BUTTONS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
+    private final SettingButton[] MINUS_BUTTONS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
     private final TextField[] FUNCTION =new TextField[ENGLISH_BOTTOM_NAMES.length];
     private final JButton RESET =new JButton();
     private final JButton SHOW_ORIGINAL_PHOTO =new JButton();
@@ -47,7 +49,7 @@ public class EditorBody extends JPanel{
     private final int GENERAL_BOTTOM_HEIGHT =70;
     private final int START_ADD =11;
     private final int PLUS_BOTTOMS_START=150;
-    private final int MINUS_BOTTOMS_START=10;
+    private final int MINUS_BUTTONS_START =10;
     private final int Y_START=120;
     private final int BOTTOMS_DISTANCE=90;
     private final int FONT_SIZE=20;
@@ -57,15 +59,15 @@ public class EditorBody extends JPanel{
     private final JLabel EXPLAIN =new JLabel("copy and paste photo path (ctrl+shift+c)");
     private final int NEW_LABEL_WIDTH =300;
     private final int NEW_LABEL_HEIGHT =30;
-    //effect bottoms
+    //effect buttons
     private final String[] ENGLISH_EFFECT_NAMES = {"negative", "makeGray", "sparkles","creativeChange","addNoise","mirror"};
     private final String[] HEBREW_EFFECT_NAMES = {"היפוך צבעים", "גווני אפור", "ניצוצות צבעוניים","שינוי יצירתי","הוסף רעש","מראה"};
     private final int NUM_OF_EFFECTS= ENGLISH_EFFECT_NAMES.length;
-    private final JButton[] EFFECT_BOTTOMS = new JButton[NUM_OF_EFFECTS];
-    private final ButtonsList MENU_BOTTOM=new ButtonsList(1300,Y_START-90,"effects",160,60,EFFECT_BOTTOMS, ENGLISH_EFFECT_NAMES);
+    private final JButton[] EFFECT_BUTTONS = new JButton[NUM_OF_EFFECTS];
+    private final ButtonsList MENU_BUTTON =new ButtonsList(1300,Y_START-90,"effects",160,60, EFFECT_BUTTONS, ENGLISH_EFFECT_NAMES);
     private final JButton CHANGE_LANGUAGE =new JButton();
-    //facebook bottom and fields
-    private final JButton FACEBOOK_BOTTOM =new JButton();
+    //facebook button and fields
+    private final JButton FACEBOOK_BUTTON =new JButton();
     private final int FACEBOOK_X=550;
     private final int FACEBOOK_Y=25;
     private final int FACEBOOK_WIDTH=90;
@@ -78,7 +80,7 @@ public class EditorBody extends JPanel{
     private boolean facebook=false;
     private final TextField USERNAME_TEXT_FIELD =new TextField();
     private final TextField PATH_TEXT_FIELD =new TextField();
-    private final JButton SUBMIT_FACEBOOK_DETAILS_BOTTOM=new JButton();
+    private final JButton SUBMIT_FACEBOOK_DETAILS_BUTTON =new JButton();
     private final JLabel EXPLAIN_PATH=new JLabel();
     private final String EXPLAIN_PATH_ENGLISH="  save location";
     private final String EXPLAIN_PATH_HEBREW="שמור במיקום   ";
@@ -111,74 +113,75 @@ public class EditorBody extends JPanel{
             this.setBackground(null);
             this.setDoubleBuffered(true);
             this.setBackground(Color.black);
-            //effects bottom list
-            this.add(MENU_BOTTOM);
+
+            //effects button list
+            this.add(MENU_BUTTON);
             int rightSide=0;
-            for (int i = 0; i < EFFECT_BOTTOMS.length; i++) {
-                this.add(EFFECT_BOTTOMS[i]);}
+            for (int i = 0; i < EFFECT_BUTTONS.length; i++) {
+                this.add(EFFECT_BUTTONS[i]);}
             int numberOfLeftButtons=5;
             for (int i = 0; i < ENGLISH_BOTTOM_NAMES.length; i++) {
                 int yLocation;
                 if(i>=numberOfLeftButtons){
                     yLocation=Y_START +(i-numberOfLeftButtons)*BOTTOMS_DISTANCE;
-                    rightSide=MENU_BOTTOM.getX()-MINUS_BOTTOMS_START-12;}
+                    rightSide= MENU_BUTTON.getX()- MINUS_BUTTONS_START -12;}
                 else {
                     yLocation=Y_START +i*BOTTOMS_DISTANCE;
                 }
 
-                PLUS_BOTTOMS[i]=new SettingButton(PLUS_BOTTOMS_START+rightSide,yLocation,">+");
-                MINUS_BOTTOMS[i]=new SettingButton(MINUS_BOTTOMS_START+rightSide,yLocation,"-<");
+                PLUS_BUTTONS[i]=new SettingButton(PLUS_BOTTOMS_START+rightSide,yLocation,">+");
+                MINUS_BUTTONS[i]=new SettingButton(MINUS_BUTTONS_START +rightSide,yLocation,"-<");
                 FUNCTION[i]=new TextField();
-                FUNCTION[i].setBounds(MINUS_BOTTOMS_START+ MINUS_BOTTOMS[i].getWidth()+rightSide,yLocation,BOTTOMS_DISTANCE, MINUS_BOTTOMS[i].getHeight());
+                FUNCTION[i].setBounds(MINUS_BUTTONS_START + MINUS_BUTTONS[i].getWidth()+rightSide,yLocation,BOTTOMS_DISTANCE, MINUS_BUTTONS[i].getHeight());
                 FUNCTION[i].setEnabled(false);
                 FUNCTION[i].setFont(new Font("arial", Font.BOLD, FONT_SIZE));
                 FUNCTION[i].setText(ENGLISH_BOTTOM_NAMES[i]);
-                this.add(PLUS_BOTTOMS[i]);
-                this.add(MINUS_BOTTOMS[i]);
+                this.add(PLUS_BUTTONS[i]);
+                this.add(MINUS_BUTTONS[i]);
                 this.add(FUNCTION[i]);
             }
-            //editing bottoms
-            PLUS_BOTTOMS[0].addActionListener((e)-> shadowChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[0].addActionListener((e)-> shadowChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[1].addActionListener((e)-> light(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[1].addActionListener((e)-> light(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[2].addActionListener((e)-> enhanceContrast(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[2].addActionListener((e)-> enhanceContrast(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[3].addActionListener((e)-> addColor(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[3].addActionListener((e)-> addColor(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[4].addActionListener((e)-> warm(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[4].addActionListener((e)-> warm(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[5].addActionListener((e)-> red(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[5].addActionListener((e)-> red(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[6].addActionListener((e)-> green(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[6].addActionListener((e)-> green(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[7].addActionListener((e)-> blue(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[7].addActionListener((e)-> blue(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[8].addActionListener((e)-> white(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[8].addActionListener((e)-> white(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            PLUS_BOTTOMS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
-            MINUS_BOTTOMS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            //editing buttons
+            PLUS_BUTTONS[0].addActionListener((e)-> shadowChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[0].addActionListener((e)-> shadowChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[1].addActionListener((e)-> light(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[1].addActionListener((e)-> light(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[2].addActionListener((e)-> enhanceContrast(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[2].addActionListener((e)-> enhanceContrast(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[3].addActionListener((e)-> addColor(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[3].addActionListener((e)-> addColor(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[4].addActionListener((e)-> warm(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[4].addActionListener((e)-> warm(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[5].addActionListener((e)-> red(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[5].addActionListener((e)-> red(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[6].addActionListener((e)-> green(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[6].addActionListener((e)-> green(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[7].addActionListener((e)-> blue(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[7].addActionListener((e)-> blue(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[8].addActionListener((e)-> white(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[8].addActionListener((e)-> white(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
+            PLUS_BUTTONS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
+            MINUS_BUTTONS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
             //effect bottoms
-            EFFECT_BOTTOMS[0].addActionListener((e)-> negative(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
-            EFFECT_BOTTOMS[1].addActionListener((e)-> makeGray(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
-            EFFECT_BOTTOMS[2].addActionListener((e)-> sparkles(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
-            EFFECT_BOTTOMS[3].addActionListener((e)-> creativeChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
-            EFFECT_BOTTOMS[4].addActionListener((e)-> addNoise(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
-            EFFECT_BOTTOMS[5].addActionListener((e)-> mirror(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[0].addActionListener((e)-> negative(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[1].addActionListener((e)-> makeGray(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[2].addActionListener((e)-> sparkles(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[3].addActionListener((e)-> creativeChange(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[4].addActionListener((e)-> addNoise(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
+            EFFECT_BUTTONS[5].addActionListener((e)-> mirror(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
 
 
-            setNormalBottom(SAVE,"save");
-            SAVE.setBounds(MINUS_BOTTOMS_START+ START_ADD,SAVE_Y, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
+            setNormalButton(SAVE,"save");
+            SAVE.setBounds(MINUS_BUTTONS_START + START_ADD,SAVE_Y, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
             SAVE.addActionListener((e)-> setLargePhoto());
             this.add(SAVE);
 
-            setNormalBottom(RESET,"reset");
-            RESET.setBounds(MINUS_BOTTOMS_START+ START_ADD, PLUS_BOTTOMS[4].getY()+ PLUS_BOTTOMS[4].getHeight()+Y_START, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
+            setNormalButton(RESET,"reset");
+            RESET.setBounds(MINUS_BUTTONS_START + START_ADD, PLUS_BUTTONS[4].getY()+ PLUS_BUTTONS[4].getHeight()+Y_START, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
             RESET.addActionListener((e)-> resetPhoto());
             this.add(RESET);
 
-            setNormalBottom(SHOW_ORIGINAL_PHOTO,"showOriginal");
-            SHOW_ORIGINAL_PHOTO.setBounds(MINUS_BOTTOMS_START+ START_ADD, PLUS_BOTTOMS[4].getY()+ PLUS_BOTTOMS[4].getHeight()+Y_START-RESET.getHeight()-20, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
+            setNormalButton(SHOW_ORIGINAL_PHOTO,"showOriginal");
+            SHOW_ORIGINAL_PHOTO.setBounds(MINUS_BUTTONS_START + START_ADD, PLUS_BUTTONS[4].getY()+ PLUS_BUTTONS[4].getHeight()+Y_START-RESET.getHeight()-20, GENERAL_BOTTOM_WIDTH, GENERAL_BOTTOM_HEIGHT);
             SHOW_ORIGINAL_PHOTO.addActionListener((e)->{
                 displayOriginal=!displayOriginal;
                 if(displayOriginal){
@@ -196,49 +199,53 @@ public class EditorBody extends JPanel{
         }
         addTextAndButton();
         this.add(PHOTO_LOCATION);
-        this.add(SEND_LOCATION_BOTTOM);
-        setNormalBottom(CHANGE_LANGUAGE,"לעברית");
-        CHANGE_LANGUAGE.setBounds(MENU_BOTTOM.getX(), SHOW_ORIGINAL_PHOTO.getY(), GENERAL_BOTTOM_WIDTH,GENERAL_BOTTOM_HEIGHT);
+        this.add(SEND_LOCATION_BUTTON);
+        setNormalButton(CHANGE_LANGUAGE,"לעברית");
+        CHANGE_LANGUAGE.setBounds(MENU_BUTTON.getX(), SHOW_ORIGINAL_PHOTO.getY(), GENERAL_BOTTOM_WIDTH,GENERAL_BOTTOM_HEIGHT);
+
         CHANGE_LANGUAGE.addActionListener((e)->changeLanguage());
         this.add(CHANGE_LANGUAGE);
         newLabel(EXPLAIN,PHOTO_LOCATION.getX(),NOTHING);
-        FACEBOOK_BOTTOM.setText(FACEBOOK_ENGLISH_LOCAL);
-        FACEBOOK_BOTTOM.setBounds(FACEBOOK_X,FACEBOOK_Y,FACEBOOK_WIDTH,FACEBOOK_HEIGHT);
-        FACEBOOK_BOTTOM.addActionListener((e)->{
+        FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH_LOCAL);
+        FACEBOOK_BUTTON.setBounds(FACEBOOK_X,FACEBOOK_Y,FACEBOOK_WIDTH,FACEBOOK_HEIGHT);
+
+        FACEBOOK_BUTTON.addActionListener((e)->{
             facebook=!facebook;
             PHOTO_LOCATION.setVisible(!facebook);
-            SEND_LOCATION_BOTTOM.setVisible(!facebook);
+            SEND_LOCATION_BUTTON.setVisible(!facebook);
             EXPLAIN.setVisible(!facebook);
             PATH_TEXT_FIELD.setVisible(facebook);
             USERNAME_TEXT_FIELD.setVisible(facebook);
-            SUBMIT_FACEBOOK_DETAILS_BOTTOM.setVisible(facebook);
+            SUBMIT_FACEBOOK_DETAILS_BUTTON.setVisible(facebook);
             EXPLAIN_USERNAME.setVisible(facebook);
             EXPLAIN_PATH.setVisible(facebook);
             if(facebook){
                 if(english){
-            FACEBOOK_BOTTOM.setText(FACEBOOK_ENGLISH);
+                    FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH);
                 }else {
-                    FACEBOOK_BOTTOM.setText(FACEBOOK_HEBREW);
-                }}else {
+                    FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW);
+                }
+            }else {
                 if(english){
-                    FACEBOOK_BOTTOM.setText(FACEBOOK_ENGLISH_LOCAL);
+                    FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH_LOCAL);
                 }else {
-                    FACEBOOK_BOTTOM.setText(FACEBOOK_HEBREW_LOCAL);
+                    FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW_LOCAL);
                 }
             }
         });
-        add(FACEBOOK_BOTTOM);
+        add(FACEBOOK_BUTTON);
         USERNAME_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y,PHOTO_LOCATION_WIDTH,FACEBOOK_HEIGHT);
         USERNAME_TEXT_FIELD.setVisible(false);
         add(USERNAME_TEXT_FIELD);
         PATH_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y+FACEBOOK_HEIGHT,PHOTO_LOCATION_WIDTH,FACEBOOK_HEIGHT);
         PATH_TEXT_FIELD.setVisible(false);
         add(PATH_TEXT_FIELD);
-        SUBMIT_FACEBOOK_DETAILS_BOTTOM.setBounds(PATH_TEXT_FIELD.getX()+PHOTO_LOCATION_WIDTH,FACEBOOK_Y,2*FACEBOOK_HEIGHT,2*FACEBOOK_HEIGHT);
-        SUBMIT_FACEBOOK_DETAILS_BOTTOM.setVisible(false);
-        SUBMIT_FACEBOOK_DETAILS_BOTTOM.setText("...");
-        SUBMIT_FACEBOOK_DETAILS_BOTTOM.addActionListener((e)-> takeFacebookPhoto());
-        add(SUBMIT_FACEBOOK_DETAILS_BOTTOM);
+        SUBMIT_FACEBOOK_DETAILS_BUTTON.setBounds(PATH_TEXT_FIELD.getX()+PHOTO_LOCATION_WIDTH,FACEBOOK_Y,2*FACEBOOK_HEIGHT,2*FACEBOOK_HEIGHT);
+        SUBMIT_FACEBOOK_DETAILS_BUTTON.setVisible(false);
+        SUBMIT_FACEBOOK_DETAILS_BUTTON.setText("...");
+
+        SUBMIT_FACEBOOK_DETAILS_BUTTON.addActionListener((e)-> takeFacebookPhoto());
+        add(SUBMIT_FACEBOOK_DETAILS_BUTTON);
         EXPLAIN_PATH.setVisible(false);
         EXPLAIN_PATH.setBounds(FACEBOOK_X,FACEBOOK_Y+FACEBOOK_HEIGHT,FACEBOOK_WIDTH,FACEBOOK_HEIGHT);
         EXPLAIN_PATH.setForeground(Color.WHITE);
@@ -251,6 +258,7 @@ public class EditorBody extends JPanel{
         EXPLAIN_USERNAME.setText("Enter facebook username:");
         add(EXPLAIN_USERNAME);
     }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Pixel[][] displayedArray;
@@ -264,22 +272,31 @@ public class EditorBody extends JPanel{
         }catch (Exception ignored){
         }
     }
+
     private void addTextAndButton(){
         PHOTO_LOCATION.setBounds(PHOTO_LOCATION_X,PHOTO_LOCATION_Y,PHOTO_LOCATION_WIDTH,PHOTO_LOCATION_HEIGHT);
         PHOTO_LOCATION.setFont(new Font("arial", Font.BOLD, LITTLE_FONT_SIZE));
-        SEND_LOCATION_BOTTOM.setBounds(PHOTO_LOCATION.getX()+ PHOTO_LOCATION.getWidth(), PHOTO_LOCATION.getY(), PHOTO_LOCATION.getHeight(), PHOTO_LOCATION.getHeight());
-        SEND_LOCATION_BOTTOM.setText("...");
-        SEND_LOCATION_BOTTOM.addActionListener((e)->{
-            String path= PHOTO_LOCATION.getText();
-            setPhoto(path);
-            PHOTO_LOCATION.setText("");
-            repaint();
+        SEND_LOCATION_BUTTON.setBounds(PHOTO_LOCATION.getX()+ PHOTO_LOCATION.getWidth(), PHOTO_LOCATION.getY(), PHOTO_LOCATION.getHeight(), PHOTO_LOCATION.getHeight());
+        SEND_LOCATION_BUTTON.setText("...");
+
+        SEND_LOCATION_BUTTON.addActionListener((e)->{
+            if(PHOTO_LOCATION.getText().equals("")){
+               JOptionPane.showConfirmDialog(errorFrame, "Invalid Input", "Error", JOptionPane.CLOSED_OPTION);
+            }
+            else {
+                String path= PHOTO_LOCATION.getText();
+                setPhoto(path);
+                PHOTO_LOCATION.setText("");
+                repaint();
+            }
         });
     }
-    private void setNormalBottom(JButton button,String text){
+
+    private void setNormalButton(JButton button, String text){
         button.setFont(new Font("arial", Font.BOLD, FONT_SIZE));
         button.setText(text);
     }
+
     private void setPhoto(String path){
         try {
             add ="";
@@ -331,6 +348,7 @@ public class EditorBody extends JPanel{
         }
         repaint();
     }
+
     private String setNewPhoto(String location){
         String resultPath="";
         String changeAdd="";
@@ -347,18 +365,22 @@ public class EditorBody extends JPanel{
             resultPath+=location.charAt(i);
         }
         return resultPath;}
+
     private boolean checkDivideByTwo(int check){
         while (check>2){
-            check=check/2;}
+            check /= 2;
+        }
         if(check==2){
             return true;}
         else return false;
     }
+
     private Pixel[][] arrayToDraw(){
         if(displayOriginal){
             return shrinkImageOriginal;}
         else return shrinkImage;
     }
+
     private void blue(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -379,6 +401,7 @@ public class EditorBody extends JPanel{
         else {
             blue--;
         }    }
+
     private void green(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -397,6 +420,7 @@ public class EditorBody extends JPanel{
         else {
             green--;
         }    }
+
     private void red(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -415,6 +439,7 @@ public class EditorBody extends JPanel{
         else {
             red--;
         }    }
+
     private void light(Pixel[][]photo, int width, int height, int change){
         int lightAmount=550;
         for (int i = 0; i < height; i++) {
@@ -441,6 +466,7 @@ public class EditorBody extends JPanel{
         else {
             light--;
         }    }
+
     private void shadowChange(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -466,12 +492,14 @@ public class EditorBody extends JPanel{
         else {
             shadows--;
         }    }
+
     private int checkIfColorToLittle(int color){
         if(color<NOTHING)
             return NOTHING;
 
         return color;
     }
+
     private void enhanceContrast(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -492,6 +520,7 @@ public class EditorBody extends JPanel{
             contrast--;
         }
     }
+
     private int brightDarkCheck(int color,int change){
         if(color+change>=MAX_COLOR){
             return MAX_COLOR;
@@ -506,6 +535,7 @@ public class EditorBody extends JPanel{
             }
         }
         return color;}
+
     private void resetPhoto(){
         for (int i = 0; i < qualityHeight; i+=shrinkPhoto) {
             for (int j = 0; j < qualityWidth; j+=shrinkPhoto) {
@@ -524,6 +554,7 @@ public class EditorBody extends JPanel{
                 fullPhoto[i][j].setColor(pixelColor);
             }}
     }
+
     private void resetAds(){
         shadows=NOTHING;
         contrast=NOTHING;
@@ -541,6 +572,7 @@ public class EditorBody extends JPanel{
         isGray=false;
         mirror=false;
     }
+
     private void addColor(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -574,12 +606,14 @@ public class EditorBody extends JPanel{
             color--;
         }
     }
+
     private int checkIfColorToBig(int color){
         if(color>=MAX_COLOR)
             return MAX_COLOR;
 
         return color;
     }
+
     private void white(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -605,6 +639,7 @@ public class EditorBody extends JPanel{
             white--;
         }
     }
+
     private void warm(Pixel[][]photo, int width, int height, int change){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -627,6 +662,7 @@ public class EditorBody extends JPanel{
             warm--;
         }
     }
+
     private void yellow(Pixel[][]photo, int width, int height, int change){
         int difference=60;
         int strongerThanBlue=60;
@@ -658,6 +694,7 @@ public class EditorBody extends JPanel{
         sunLight++;}
         else sunLight--;
     }
+
     private void newLabel(JLabel label,int x,int y){
         label.setFont(new Font("arial", Font.BOLD, LITTLE_FONT_SIZE));
         label.setBounds(x,y, NEW_LABEL_WIDTH, NEW_LABEL_HEIGHT);
@@ -681,6 +718,7 @@ public class EditorBody extends JPanel{
         repaint();
         negative=!negative;
     }
+
     private void mirror(Pixel[][]photo, int width, int height){
         Pixel[][]photoToCopy=new Pixel[height][width];
         for (int i = 0; i <height; i++) {
@@ -699,6 +737,7 @@ public class EditorBody extends JPanel{
         repaint();
         mirror=true;
     }
+
     private void makeGray(Pixel[][]photo, int width, int height){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -716,6 +755,7 @@ public class EditorBody extends JPanel{
         repaint();
         isGray=true;
     }
+
     private void sparkles(Pixel[][]photo, int width, int height){
         int maxDistance=50;
         int distance;
@@ -734,6 +774,7 @@ public class EditorBody extends JPanel{
         repaint();
         sparkles++;
     }
+
     private void creativeChange(Pixel[][]photo, int width, int height){
         Color newColor;
         int max=14;
@@ -763,6 +804,7 @@ public class EditorBody extends JPanel{
         }
         repaint();
     }
+
     private void addNoise(Pixel[][]photo, int width, int height){
         int max=15;
         int min=-15;
@@ -782,6 +824,7 @@ public class EditorBody extends JPanel{
         repaint();
         addNoise++;
     }
+
     private void changeLanguage(){
         String []effectsNames;
         String []buttonsNames;
@@ -791,15 +834,15 @@ public class EditorBody extends JPanel{
         buttonsNames=ENGLISH_BOTTOM_NAMES;
         RESET.setText("reset");
         SAVE.setText("save");
-        MENU_BOTTOM.setText("effects");
+        MENU_BUTTON.setText("effects");
         edited="showEdited";
         original="showOriginal";
         CHANGE_LANGUAGE.setText("לעברית");
         EXPLAIN.setText("copy and paste photo path (ctrl+shift+c)");
         if(facebook){
-        FACEBOOK_BOTTOM.setText(FACEBOOK_ENGLISH);}
+        FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH);}
         else {
-        FACEBOOK_BOTTOM.setText(FACEBOOK_ENGLISH_LOCAL);
+        FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH_LOCAL);
         }
         EXPLAIN_PATH.setText(EXPLAIN_PATH_ENGLISH);
         EXPLAIN_USERNAME.setText(EXPLAIN_USERNAME_ENGLISH);
@@ -809,15 +852,15 @@ public class EditorBody extends JPanel{
             buttonsNames=HEBREW_BOTTOM_NAMES;
             RESET.setText("אתחל");
             SAVE.setText("שמור");
-            MENU_BOTTOM.setText("אפקטים");
+            MENU_BUTTON.setText("אפקטים");
             edited="הצג ערוך";
             original="הצג מקורי";
             CHANGE_LANGUAGE.setText("ToEnglish");
             EXPLAIN.setText("העתק והדבק את נתיב התמונה (ctrl+shift+c)");
             if(facebook){
-            FACEBOOK_BOTTOM.setText(FACEBOOK_HEBREW);}
+            FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW);}
             else {
-            FACEBOOK_BOTTOM.setText(FACEBOOK_HEBREW_LOCAL);
+            FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW_LOCAL);
             }
             EXPLAIN_PATH.setText(EXPLAIN_PATH_HEBREW);
             EXPLAIN_USERNAME.setText(EXPLAIN_USERNAME_HEBREW);
@@ -826,34 +869,46 @@ public class EditorBody extends JPanel{
             SHOW_ORIGINAL_PHOTO.setText(edited);
         }else
             SHOW_ORIGINAL_PHOTO.setText(original);
-            for (int i = 0; i < EFFECT_BOTTOMS.length; i++) {
-                    EFFECT_BOTTOMS[i].setText(effectsNames[i]);
+            for (int i = 0; i < EFFECT_BUTTONS.length; i++) {
+                    EFFECT_BUTTONS[i].setText(effectsNames[i]);
             }
         for (int i = 0; i < FUNCTION.length; i++) {
             FUNCTION[i].setText(buttonsNames[i]);
         }
     }
+
     private void takeFacebookPhoto(){
         try {
             String path=PATH_TEXT_FIELD.getText();
             String location=USERNAME_TEXT_FIELD.getText();
             if(!(path.equals("")||location.equals(""))){
-            ScrapPhoto scrapPhoto=new ScrapPhoto();
-            scrapPhoto.setPartOfLocation(path);
-            scrapPhoto.usePhoto(location);
-            PATH_TEXT_FIELD.setText("");
-            USERNAME_TEXT_FIELD.setText("");
-            setPhoto(scrapPhoto.getFullLocation());}
+                ScrapPhoto scrapPhoto=new ScrapPhoto();
+                scrapPhoto.setPartOfLocation(path);
+                scrapPhoto.usePhoto(location);
+                PATH_TEXT_FIELD.setText("");
+                USERNAME_TEXT_FIELD.setText("");
+                setPhoto(scrapPhoto.getFullLocation());
+                checkPath = true;
+            }else {
+                JOptionPane.showConfirmDialog(errorFrame, "Invalid Input", "Error", JOptionPane.CLOSED_OPTION);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             PATH_TEXT_FIELD.setText("");
             USERNAME_TEXT_FIELD.setText("");
         }
     }
+
     private void setLargePhoto(){
         //timesEffects
-        while (sparkles >NOTHING) {{sparkles(fullPhoto,qualityWidth,qualityHeight);}sparkles -=2;}
-        while (addNoise>NOTHING) {{addNoise(fullPhoto,qualityWidth,qualityHeight);}addNoise-=2;}
+        while (sparkles >NOTHING) {
+            sparkles(fullPhoto,qualityWidth,qualityHeight);
+            sparkles -=2;
+        }
+        while (addNoise>NOTHING) {
+            addNoise(fullPhoto,qualityWidth,qualityHeight);
+            addNoise-=2;
+        }
         //effects
         if(negative){negative(fullPhoto,qualityWidth,qualityHeight);}
         if(isGray){makeGray(fullPhoto,qualityWidth,qualityHeight);}
