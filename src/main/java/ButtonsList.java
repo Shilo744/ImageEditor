@@ -5,9 +5,9 @@ public class ButtonsList extends JButton{
     private final int X;
     private final int Y;
     private final JButton [] BUTTONS_LIST;
-    private boolean visible=false;
-    private int yLocation;
     private final int FONT_SIZE=20;
+    private int yLocation;
+    private boolean visible=false;
 
     public ButtonsList(int x, int y, String insideText, int width, int height, JButton [] list, String []textList){
         this.X=x;
