@@ -8,13 +8,13 @@ public class Window extends JFrame{
         Window main=new Window();
     }
     Window(){
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(true);
+        this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setResizable(true);
         EditorBody editorBody=new EditorBody();
-        add(editorBody);
-        setVisible(true);
+        this.add(editorBody);
+        this.setVisible(true);
 
     }
 }
