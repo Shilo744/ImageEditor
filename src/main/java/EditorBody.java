@@ -6,17 +6,19 @@ import java.io.File;
 import java.io.IOException;
 
 public class EditorBody extends JPanel{
-    JFrame errorFrame = new JFrame();
-    private boolean checkPath = false;
+    // error frame
+    private JFrame errorFrame = new JFrame();
+
     //choose photo
     private final TextField PHOTO_LOCATION =new TextField();
-    int PHOTO_LOCATION_X=640;
-    int PHOTO_LOCATION_Y=25;
-    int PHOTO_LOCATION_WIDTH=190;
-    int PHOTO_LOCATION_HEIGHT=30;
-    private final JButton SEND_LOCATION_BUTTON =new JButton();
-    //setPhoto
-    private String location;
+    private final int PHOTO_PATH_IN_COMPUTER_X =640;
+    private final int PHOTO_PATH_IN_COMPUTER_Y =25;
+    private final int PHOTO_PATH_IN_COMPUTER_WIDTH =190;
+    private final int PHOTO_PATH_IN_COMPUTER_HEIGHT =30;
+    private final JButton SEND_PATH_IN_COMPUTER_BUTTON =new JButton();
+
+    //set Photo
+    private String pathInComputer;
     private String add;
     private int newPhotoName;
     private final int MAKE_RELATIVE_SIZE=1000;
@@ -32,13 +34,14 @@ public class EditorBody extends JPanel{
     private Pixel[][] shrinkImage;
     private Pixel[][] shrinkImageOriginal;
     private boolean displayOriginal=false;
+
     //buttons
-    private final String [] ENGLISH_BOTTOM_NAMES ={"shadows","lights","contrast","colors","warm","red","green","blue","white","sunLight"};
-    private final String [] HEBREW_BOTTOM_NAMES ={"צללים","אור","ניגודיות","צבעים","חמים","אדום","ירוק","כחול","לבן","שמש"};
-    private boolean english=true;
-    private final SettingButton[] PLUS_BUTTONS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
-    private final SettingButton[] MINUS_BUTTONS = new SettingButton[ENGLISH_BOTTOM_NAMES.length];
-    private final TextField[] FUNCTION =new TextField[ENGLISH_BOTTOM_NAMES.length];
+    private final String [] ENGLISH_BUTTON_NAMES ={"shadows","lights","contrast","colors","warm","red","green","blue","white","sunLight"};
+    private final String [] HEBREW_BUTTON_NAMES ={"צללים","אור","ניגודיות","צבעים","חמים","אדום","ירוק","כחול","לבן","שמש"};
+    private boolean isLanguageEnglish=true;
+    private final SettingButton[] PLUS_BUTTONS = new SettingButton[ENGLISH_BUTTON_NAMES.length];
+    private final SettingButton[] MINUS_BUTTONS = new SettingButton[ENGLISH_BUTTON_NAMES.length];
+    private final TextField[] FUNCTION =new TextField[ENGLISH_BUTTON_NAMES.length];
     private final JButton RESET =new JButton();
     private final JButton SHOW_ORIGINAL_PHOTO =new JButton();
     private String edited="showEdited";
@@ -48,17 +51,19 @@ public class EditorBody extends JPanel{
     private final int GENERAL_BOTTOM_WIDTH =160;
     private final int GENERAL_BOTTOM_HEIGHT =70;
     private final int START_ADD =11;
-    private final int PLUS_BOTTOMS_START=150;
+    private final int PLUS_BUTTONS_START =150;
     private final int MINUS_BUTTONS_START =10;
     private final int Y_START=120;
-    private final int BOTTOMS_DISTANCE=90;
+    private final int BUTTONS_DISTANCE =90;
     private final int FONT_SIZE=20;
     private final int LITTLE_FONT_SIZE=12;
     private final int NOTHING=0;
+
     //label
     private final JLabel EXPLAIN =new JLabel("copy and paste photo path (ctrl+shift+c)");
     private final int NEW_LABEL_WIDTH =300;
     private final int NEW_LABEL_HEIGHT =30;
+
     //effect buttons
     private final String[] ENGLISH_EFFECT_NAMES = {"negative", "makeGray", "sparkles","creativeChange","addNoise","mirror"};
     private final String[] HEBREW_EFFECT_NAMES = {"היפוך צבעים", "גווני אפור", "ניצוצות צבעוניים","שינוי יצירתי","הוסף רעש","מראה"};
@@ -66,6 +71,7 @@ public class EditorBody extends JPanel{
     private final JButton[] EFFECT_BUTTONS = new JButton[NUM_OF_EFFECTS];
     private final ButtonsList MENU_BUTTON =new ButtonsList(1300,Y_START-90,"effects",160,60, EFFECT_BUTTONS, ENGLISH_EFFECT_NAMES);
     private final JButton CHANGE_LANGUAGE =new JButton();
+
     //facebook button and fields
     private final JButton FACEBOOK_BUTTON =new JButton();
     private final int FACEBOOK_X=550;
@@ -82,11 +88,12 @@ public class EditorBody extends JPanel{
     private final TextField PATH_TEXT_FIELD =new TextField();
     private final JButton SUBMIT_FACEBOOK_DETAILS_BUTTON =new JButton();
     private final JLabel EXPLAIN_PATH=new JLabel();
-    private final String EXPLAIN_PATH_ENGLISH="  save location";
+    private final String EXPLAIN_PATH_ENGLISH="  Save location";
     private final String EXPLAIN_PATH_HEBREW="שמור במיקום   ";
     private final JLabel EXPLAIN_USERNAME=new JLabel();
-    private final String EXPLAIN_USERNAME_ENGLISH="enter facebook username:";
+    private final String EXPLAIN_USERNAME_ENGLISH="Enter facebook username:";
     private final String EXPLAIN_USERNAME_HEBREW="הכנס את שם משתמש של פייסבוק:";
+
     //fields
     private final int MAX_COLOR=255;
     private final int change=3;
@@ -102,10 +109,11 @@ public class EditorBody extends JPanel{
     private int blue=0;
     private int white=0;
     private int sunLight =0;
+
     //effects
-    private boolean negative=false;
-    private boolean isGray=false;
-    private boolean mirror=false;
+    private boolean isNegativeEffect =false;
+    private boolean isGrayEffect =false;
+    private boolean isMirrorEffect =false;
 
     EditorBody(){
         try {
@@ -120,22 +128,22 @@ public class EditorBody extends JPanel{
             for (int i = 0; i < EFFECT_BUTTONS.length; i++) {
                 this.add(EFFECT_BUTTONS[i]);}
             int numberOfLeftButtons=5;
-            for (int i = 0; i < ENGLISH_BOTTOM_NAMES.length; i++) {
+            for (int i = 0; i < ENGLISH_BUTTON_NAMES.length; i++) {
                 int yLocation;
                 if(i>=numberOfLeftButtons){
-                    yLocation=Y_START +(i-numberOfLeftButtons)*BOTTOMS_DISTANCE;
+                    yLocation= Y_START + (i-numberOfLeftButtons) * BUTTONS_DISTANCE;
                     rightSide= MENU_BUTTON.getX()- MINUS_BUTTONS_START -12;}
                 else {
-                    yLocation=Y_START +i*BOTTOMS_DISTANCE;
+                    yLocation = Y_START + i * BUTTONS_DISTANCE;
                 }
 
-                PLUS_BUTTONS[i]=new SettingButton(PLUS_BOTTOMS_START+rightSide,yLocation,">+");
+                PLUS_BUTTONS[i]=new SettingButton(PLUS_BUTTONS_START +rightSide,yLocation,">+");
                 MINUS_BUTTONS[i]=new SettingButton(MINUS_BUTTONS_START +rightSide,yLocation,"-<");
                 FUNCTION[i]=new TextField();
-                FUNCTION[i].setBounds(MINUS_BUTTONS_START + MINUS_BUTTONS[i].getWidth()+rightSide,yLocation,BOTTOMS_DISTANCE, MINUS_BUTTONS[i].getHeight());
+                FUNCTION[i].setBounds(MINUS_BUTTONS_START + MINUS_BUTTONS[i].getWidth()+rightSide,yLocation, BUTTONS_DISTANCE, MINUS_BUTTONS[i].getHeight());
                 FUNCTION[i].setEnabled(false);
                 FUNCTION[i].setFont(new Font("arial", Font.BOLD, FONT_SIZE));
-                FUNCTION[i].setText(ENGLISH_BOTTOM_NAMES[i]);
+                FUNCTION[i].setText(ENGLISH_BUTTON_NAMES[i]);
                 this.add(PLUS_BUTTONS[i]);
                 this.add(MINUS_BUTTONS[i]);
                 this.add(FUNCTION[i]);
@@ -161,7 +169,7 @@ public class EditorBody extends JPanel{
             MINUS_BUTTONS[8].addActionListener((e)-> white(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
             PLUS_BUTTONS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,change));
             MINUS_BUTTONS[9].addActionListener((e)-> yellow(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight,-change));
-            //effect bottoms
+            //effect buttons
             EFFECT_BUTTONS[0].addActionListener((e)-> negative(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
             EFFECT_BUTTONS[1].addActionListener((e)-> makeGray(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
             EFFECT_BUTTONS[2].addActionListener((e)-> sparkles(shrinkImage,shrinkPhotoWidth,shrinkPhotoHeight));
@@ -199,7 +207,7 @@ public class EditorBody extends JPanel{
         }
         addTextAndButton();
         this.add(PHOTO_LOCATION);
-        this.add(SEND_LOCATION_BUTTON);
+        this.add(SEND_PATH_IN_COMPUTER_BUTTON);
         setNormalButton(CHANGE_LANGUAGE,"לעברית");
         CHANGE_LANGUAGE.setBounds(MENU_BUTTON.getX(), SHOW_ORIGINAL_PHOTO.getY(), GENERAL_BOTTOM_WIDTH,GENERAL_BOTTOM_HEIGHT);
 
@@ -212,7 +220,7 @@ public class EditorBody extends JPanel{
         FACEBOOK_BUTTON.addActionListener((e)->{
             facebook=!facebook;
             PHOTO_LOCATION.setVisible(!facebook);
-            SEND_LOCATION_BUTTON.setVisible(!facebook);
+            SEND_PATH_IN_COMPUTER_BUTTON.setVisible(!facebook);
             EXPLAIN.setVisible(!facebook);
             PATH_TEXT_FIELD.setVisible(facebook);
             USERNAME_TEXT_FIELD.setVisible(facebook);
@@ -220,13 +228,13 @@ public class EditorBody extends JPanel{
             EXPLAIN_USERNAME.setVisible(facebook);
             EXPLAIN_PATH.setVisible(facebook);
             if(facebook){
-                if(english){
+                if(isLanguageEnglish){
                     FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH);
                 }else {
                     FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW);
                 }
             }else {
-                if(english){
+                if(isLanguageEnglish){
                     FACEBOOK_BUTTON.setText(FACEBOOK_ENGLISH_LOCAL);
                 }else {
                     FACEBOOK_BUTTON.setText(FACEBOOK_HEBREW_LOCAL);
@@ -234,13 +242,13 @@ public class EditorBody extends JPanel{
             }
         });
         add(FACEBOOK_BUTTON);
-        USERNAME_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y,PHOTO_LOCATION_WIDTH,FACEBOOK_HEIGHT);
+        USERNAME_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y, PHOTO_PATH_IN_COMPUTER_WIDTH,FACEBOOK_HEIGHT);
         USERNAME_TEXT_FIELD.setVisible(false);
         add(USERNAME_TEXT_FIELD);
-        PATH_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y+FACEBOOK_HEIGHT,PHOTO_LOCATION_WIDTH,FACEBOOK_HEIGHT);
+        PATH_TEXT_FIELD.setBounds(FACEBOOK_X+FACEBOOK_WIDTH,FACEBOOK_Y+FACEBOOK_HEIGHT, PHOTO_PATH_IN_COMPUTER_WIDTH,FACEBOOK_HEIGHT);
         PATH_TEXT_FIELD.setVisible(false);
         add(PATH_TEXT_FIELD);
-        SUBMIT_FACEBOOK_DETAILS_BUTTON.setBounds(PATH_TEXT_FIELD.getX()+PHOTO_LOCATION_WIDTH,FACEBOOK_Y,2*FACEBOOK_HEIGHT,2*FACEBOOK_HEIGHT);
+        SUBMIT_FACEBOOK_DETAILS_BUTTON.setBounds(PATH_TEXT_FIELD.getX()+ PHOTO_PATH_IN_COMPUTER_WIDTH,FACEBOOK_Y,2*FACEBOOK_HEIGHT,2*FACEBOOK_HEIGHT);
         SUBMIT_FACEBOOK_DETAILS_BUTTON.setVisible(false);
         SUBMIT_FACEBOOK_DETAILS_BUTTON.setText("...");
 
@@ -274,12 +282,12 @@ public class EditorBody extends JPanel{
     }
 
     private void addTextAndButton(){
-        PHOTO_LOCATION.setBounds(PHOTO_LOCATION_X,PHOTO_LOCATION_Y,PHOTO_LOCATION_WIDTH,PHOTO_LOCATION_HEIGHT);
+        PHOTO_LOCATION.setBounds(PHOTO_PATH_IN_COMPUTER_X, PHOTO_PATH_IN_COMPUTER_Y, PHOTO_PATH_IN_COMPUTER_WIDTH, PHOTO_PATH_IN_COMPUTER_HEIGHT);
         PHOTO_LOCATION.setFont(new Font("arial", Font.BOLD, LITTLE_FONT_SIZE));
-        SEND_LOCATION_BUTTON.setBounds(PHOTO_LOCATION.getX()+ PHOTO_LOCATION.getWidth(), PHOTO_LOCATION.getY(), PHOTO_LOCATION.getHeight(), PHOTO_LOCATION.getHeight());
-        SEND_LOCATION_BUTTON.setText("...");
+        SEND_PATH_IN_COMPUTER_BUTTON.setBounds(PHOTO_LOCATION.getX()+ PHOTO_LOCATION.getWidth(), PHOTO_LOCATION.getY(), PHOTO_LOCATION.getHeight(), PHOTO_LOCATION.getHeight());
+        SEND_PATH_IN_COMPUTER_BUTTON.setText("...");
 
-        SEND_LOCATION_BUTTON.addActionListener((e)->{
+        SEND_PATH_IN_COMPUTER_BUTTON.addActionListener((e)->{
             if(PHOTO_LOCATION.getText().equals("")){
                JOptionPane.showConfirmDialog(errorFrame, "Invalid Input", "Error", JOptionPane.CLOSED_OPTION);
             }
@@ -305,8 +313,8 @@ public class EditorBody extends JPanel{
             int correctionY=150;
             resetPhoto();
 
-            location=setNewPhoto(path);
-            file = new File(location+ add);
+            pathInComputer =setNewPhoto(path);
+            file = new File(pathInComputer + add);
             if(file.exists()){
                 image = ImageIO.read(file);
 
@@ -568,9 +576,9 @@ public class EditorBody extends JPanel{
         blue=NOTHING;
         white=NOTHING;
         sunLight =NOTHING;
-        negative=false;
-        isGray=false;
-        mirror=false;
+        isNegativeEffect =false;
+        isGrayEffect =false;
+        isMirrorEffect =false;
     }
 
     private void addColor(Pixel[][]photo, int width, int height, int change){
@@ -716,7 +724,7 @@ public class EditorBody extends JPanel{
             }
         }
         repaint();
-        negative=!negative;
+        isNegativeEffect =!isNegativeEffect;
     }
 
     private void mirror(Pixel[][]photo, int width, int height){
@@ -735,7 +743,7 @@ public class EditorBody extends JPanel{
             }
         }
         repaint();
-        mirror=true;
+        isMirrorEffect =true;
     }
 
     private void makeGray(Pixel[][]photo, int width, int height){
@@ -753,7 +761,7 @@ public class EditorBody extends JPanel{
             }
         }
         repaint();
-        isGray=true;
+        isGrayEffect =true;
     }
 
     private void sparkles(Pixel[][]photo, int width, int height){
@@ -828,10 +836,10 @@ public class EditorBody extends JPanel{
     private void changeLanguage(){
         String []effectsNames;
         String []buttonsNames;
-        english=!english;
-        if(english){
+        isLanguageEnglish=!isLanguageEnglish;
+        if(isLanguageEnglish){
         effectsNames=ENGLISH_EFFECT_NAMES;
-        buttonsNames=ENGLISH_BOTTOM_NAMES;
+        buttonsNames= ENGLISH_BUTTON_NAMES;
         RESET.setText("reset");
         SAVE.setText("save");
         MENU_BUTTON.setText("effects");
@@ -849,7 +857,7 @@ public class EditorBody extends JPanel{
         }
         else{
             effectsNames=HEBREW_EFFECT_NAMES;
-            buttonsNames=HEBREW_BOTTOM_NAMES;
+            buttonsNames= HEBREW_BUTTON_NAMES;
             RESET.setText("אתחל");
             SAVE.setText("שמור");
             MENU_BUTTON.setText("אפקטים");
@@ -888,7 +896,6 @@ public class EditorBody extends JPanel{
                 PATH_TEXT_FIELD.setText("");
                 USERNAME_TEXT_FIELD.setText("");
                 setPhoto(scrapPhoto.getFullLocation());
-                checkPath = true;
             }else {
                 JOptionPane.showConfirmDialog(errorFrame, "Invalid Input", "Error", JOptionPane.CLOSED_OPTION);
             }
@@ -910,9 +917,9 @@ public class EditorBody extends JPanel{
             addNoise-=2;
         }
         //effects
-        if(negative){negative(fullPhoto,qualityWidth,qualityHeight);}
-        if(isGray){makeGray(fullPhoto,qualityWidth,qualityHeight);}
-        if(mirror){mirror(fullPhoto,qualityWidth,qualityHeight);}
+        if(isNegativeEffect){negative(fullPhoto,qualityWidth,qualityHeight);}
+        if(isGrayEffect){makeGray(fullPhoto,qualityWidth,qualityHeight);}
+        if(isMirrorEffect){mirror(fullPhoto,qualityWidth,qualityHeight);}
 
         //editing changes
         if(white!=NOTHING){white(fullPhoto,qualityWidth,qualityHeight,change*white);}
@@ -926,7 +933,7 @@ public class EditorBody extends JPanel{
         if(green!=NOTHING){green(fullPhoto,qualityWidth,qualityHeight,change*green);}
         if(blue!=NOTHING){blue(fullPhoto,qualityWidth,qualityHeight,change*blue);}
         try{
-            File photo=new File(location+newPhotoName+ add);
+            File photo=new File(pathInComputer +newPhotoName+ add);
             BufferedImage savedImage=ImageIO.read(file);
 
             for (int i = 0; i < savedImage.getWidth(); i++) {
